@@ -229,7 +229,7 @@ void ILI9341::windowData(color_t c) {
 }
 
 void ILI9341::windowData(color_t *c, int len) {
-    for (uint32_t i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
         data(c[i] >> 8);
         data(c[i] & 0xFF);
     }
