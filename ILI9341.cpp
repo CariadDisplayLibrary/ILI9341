@@ -262,6 +262,7 @@ void ILI9341_DSPI::initializeDevice() {
 }
 
 void ILI9341_DSPI::command(uint8_t c) {
+    _spi->setSpeed(20000000UL);
     _rs_port->lat.clr = _rs_mask;
     _cs_port->lat.clr = _cs_mask;
     _spi->transfer(c);
@@ -270,6 +271,7 @@ void ILI9341_DSPI::command(uint8_t c) {
 }
 
 void ILI9341_DSPI::data(uint8_t d) {
+    _spi->setSpeed(20000000UL);
     _rs_port->lat.set = _rs_mask;
     _cs_port->lat.clr = _cs_mask;
     _spi->transfer(d);
