@@ -12,7 +12,7 @@ XBSC-Group: DisplayCore
 XBSC-Subgroup: Drivers
 Depends: libdisplaycore-core, libdspi-chipkit
 Provides: ILI9341.h
-Description: ILI9341 library for DisplayCore
+Description: ILI9341
 
 
 
