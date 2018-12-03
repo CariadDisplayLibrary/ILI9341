@@ -1,5 +1,7 @@
 #include <ILI9341.h>
 
+#if defined(__PIC32__)
+
 void ILI9341::command(uint8_t cmd) {
     _rs_port->lat.clr = _rs_mask;
     _cs_port->lat.clr = _cs_mask;
@@ -38,7 +40,85 @@ void ILI9341::data(uint8_t dat) {
     _cs_port->lat.set = _cs_mask;
 }
 
+#elif defined(__STM32F1__)
+void ILI9341::command(uint8_t cmd) {
+    _rs_info->gpio_device->regs->BSRR = (1U << _rs_info->gpio_bit) << ((!LOW) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!LOW) << 4);
+
+    _d0_info->gpio_device->regs->BSRR = (1U << _d0_info->gpio_bit) << ((!(cmd & 0x01)) << 4);
+    _d1_info->gpio_device->regs->BSRR = (1U << _d1_info->gpio_bit) << ((!(cmd & 0x02)) << 4);
+    _d2_info->gpio_device->regs->BSRR = (1U << _d2_info->gpio_bit) << ((!(cmd & 0x04)) << 4);
+    _d3_info->gpio_device->regs->BSRR = (1U << _d3_info->gpio_bit) << ((!(cmd & 0x08)) << 4);
+    _d4_info->gpio_device->regs->BSRR = (1U << _d4_info->gpio_bit) << ((!(cmd & 0x10)) << 4);
+    _d5_info->gpio_device->regs->BSRR = (1U << _d5_info->gpio_bit) << ((!(cmd & 0x20)) << 4);
+    _d6_info->gpio_device->regs->BSRR = (1U << _d6_info->gpio_bit) << ((!(cmd & 0x40)) << 4);
+    _d7_info->gpio_device->regs->BSRR = (1U << _d7_info->gpio_bit) << ((!(cmd & 0x80)) << 4);
+
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!LOW) << 4);
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!HIGH) << 4);
+}
+
+void ILI9341::data(uint8_t cmd) {
+    _rs_info->gpio_device->regs->BSRR = (1U << _rs_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!LOW) << 4);
+
+    _d0_info->gpio_device->regs->BSRR = (1U << _d0_info->gpio_bit) << ((!(cmd & 0x01)) << 4);
+    _d1_info->gpio_device->regs->BSRR = (1U << _d1_info->gpio_bit) << ((!(cmd & 0x02)) << 4);
+    _d2_info->gpio_device->regs->BSRR = (1U << _d2_info->gpio_bit) << ((!(cmd & 0x04)) << 4);
+    _d3_info->gpio_device->regs->BSRR = (1U << _d3_info->gpio_bit) << ((!(cmd & 0x08)) << 4);
+    _d4_info->gpio_device->regs->BSRR = (1U << _d4_info->gpio_bit) << ((!(cmd & 0x10)) << 4);
+    _d5_info->gpio_device->regs->BSRR = (1U << _d5_info->gpio_bit) << ((!(cmd & 0x20)) << 4);
+    _d6_info->gpio_device->regs->BSRR = (1U << _d6_info->gpio_bit) << ((!(cmd & 0x40)) << 4);
+    _d7_info->gpio_device->regs->BSRR = (1U << _d7_info->gpio_bit) << ((!(cmd & 0x80)) << 4);
+
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!LOW) << 4);
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!HIGH) << 4);
+}
+
+#else
+void ILI9341::command(uint8_t cmd) {
+    digitalWrite(_rs_pin, LOW);
+    digitalWrite(_cs_pin, LOW);
+
+    digitalWrite(_d0_pin, (cmd & 0x01) ? 1 : 0);
+    digitalWrite(_d1_pin, (cmd & 0x02) ? 1 : 0);
+    digitalWrite(_d2_pin, (cmd & 0x04) ? 1 : 0);
+    digitalWrite(_d3_pin, (cmd & 0x08) ? 1 : 0);
+    digitalWrite(_d4_pin, (cmd & 0x10) ? 1 : 0);
+    digitalWrite(_d5_pin, (cmd & 0x20) ? 1 : 0);
+    digitalWrite(_d6_pin, (cmd & 0x40) ? 1 : 0);
+    digitalWrite(_d7_pin, (cmd & 0x80) ? 1 : 0);
+
+    digitalWrite(_wr_pin, LOW);
+    digitalWrite(_wr_pin, HIGH);
+
+    digitalWrite(_cs_pin, HIGH);
+}
+
+void ILI9341::data(uint8_t cmd) {
+    digitalWrite(_rs_pin, HIGH);
+    digitalWrite(_cs_pin, LOW);
+
+    digitalWrite(_d0_pin, (cmd & 0x01) ? 1 : 0);
+    digitalWrite(_d1_pin, (cmd & 0x02) ? 1 : 0);
+    digitalWrite(_d2_pin, (cmd & 0x04) ? 1 : 0);
+    digitalWrite(_d3_pin, (cmd & 0x08) ? 1 : 0);
+    digitalWrite(_d4_pin, (cmd & 0x10) ? 1 : 0);
+    digitalWrite(_d5_pin, (cmd & 0x20) ? 1 : 0);
+    digitalWrite(_d6_pin, (cmd & 0x40) ? 1 : 0);
+    digitalWrite(_d7_pin, (cmd & 0x80) ? 1 : 0);
+
+    digitalWrite(_wr_pin, LOW);
+    digitalWrite(_wr_pin, HIGH);
+
+    digitalWrite(_cs_pin, HIGH);
+}
+#endif
+
 void ILI9341::initializeDevice() {
+#if defined(__PIC32__)
     if (_cs_pin >= NUM_DIGITAL_PINS_EXTENDED) return;
     if (_rs_pin >= NUM_DIGITAL_PINS_EXTENDED) return; 
     if (_wr_pin >= NUM_DIGITAL_PINS_EXTENDED) return;
@@ -53,6 +133,50 @@ void ILI9341::initializeDevice() {
     if (_d6_pin >= NUM_DIGITAL_PINS_EXTENDED) return;
     if (_d7_pin >= NUM_DIGITAL_PINS_EXTENDED) return;
 
+    _cs_port = getPortInformation(_cs_pin, &_cs_mask);
+    _rs_port = getPortInformation(_rs_pin, &_rs_mask);
+    _wr_port = getPortInformation(_wr_pin, &_wr_mask);
+    _rd_port = getPortInformation(_rd_pin, &_rd_mask);
+    _d0_port = getPortInformation(_d0_pin, &_d0_mask);
+    _d1_port = getPortInformation(_d1_pin, &_d1_mask);
+    _d2_port = getPortInformation(_d2_pin, &_d2_mask);
+    _d3_port = getPortInformation(_d3_pin, &_d3_mask);
+    _d4_port = getPortInformation(_d4_pin, &_d4_mask);
+    _d5_port = getPortInformation(_d5_pin, &_d5_mask);
+    _d6_port = getPortInformation(_d6_pin, &_d6_mask);
+    _d7_port = getPortInformation(_d7_pin, &_d7_mask);
+
+#elif defined(__STM32F1__)
+    if (_cs_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_rs_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_wr_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_rd_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_reset_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d0_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d1_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d2_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d3_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d4_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d5_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d6_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_d7_pin >= BOARD_NR_GPIO_PINS) return;
+
+    _wr_info = &PIN_MAP[_wr_pin];
+    _rd_info = &PIN_MAP[_rd_pin];
+    _rs_info = &PIN_MAP[_rs_pin];
+    _cs_info = &PIN_MAP[_cs_pin];
+
+    _d0_info = &PIN_MAP[_d0_pin];
+    _d1_info = &PIN_MAP[_d1_pin];
+    _d2_info = &PIN_MAP[_d2_pin];
+    _d3_info = &PIN_MAP[_d3_pin];
+    _d4_info = &PIN_MAP[_d4_pin];
+    _d5_info = &PIN_MAP[_d5_pin];
+    _d6_info = &PIN_MAP[_d6_pin];
+    _d7_info = &PIN_MAP[_d7_pin];
+
+#endif
+
     pinMode(_cs_pin, OUTPUT);
     pinMode(_rs_pin, OUTPUT);
     pinMode(_wr_pin, OUTPUT);
@@ -66,19 +190,6 @@ void ILI9341::initializeDevice() {
     pinMode(_d5_pin, OUTPUT);
     pinMode(_d6_pin, OUTPUT);
     pinMode(_d7_pin, OUTPUT);
-
-    _cs_port = getPortInformation(_cs_pin, &_cs_mask);
-    _rs_port = getPortInformation(_rs_pin, &_rs_mask);
-    _wr_port = getPortInformation(_wr_pin, &_wr_mask);
-    _rd_port = getPortInformation(_rd_pin, &_rd_mask);
-    _d0_port = getPortInformation(_d0_pin, &_d0_mask);
-    _d1_port = getPortInformation(_d1_pin, &_d1_mask);
-    _d2_port = getPortInformation(_d2_pin, &_d2_mask);
-    _d3_port = getPortInformation(_d3_pin, &_d3_mask);
-    _d4_port = getPortInformation(_d4_pin, &_d4_mask);
-    _d5_port = getPortInformation(_d5_pin, &_d5_mask);
-    _d6_port = getPortInformation(_d6_pin, &_d6_mask);
-    _d7_port = getPortInformation(_d7_pin, &_d7_mask);
 
     _width  = ILI9341::Width;
     _height = ILI9341::Height;
@@ -245,6 +356,8 @@ void ILI9341::setBacklight(int b) {
     data(b);
 }
 
+#if defined(__PIC32__)
+
 void ILI9341_DSPI::initializeDevice() {
     pinMode(_cs_pin, OUTPUT);
     pinMode(_rs_pin, OUTPUT);
@@ -278,3 +391,79 @@ void ILI9341_DSPI::data(uint8_t d) {
     _cs_port->lat.set = _cs_mask;
 }
 
+#endif
+
+#if defined(__STM32F1__)
+
+void ILI9341_PORTB::command(uint8_t cmd) {
+    _rs_info->gpio_device->regs->BSRR = (1U << _rs_info->gpio_bit) << ((!LOW) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!LOW) << 4);
+
+    gpiob.regs->ODR &= 0xFF00;
+    gpiob.regs->ODR |= cmd;
+
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!LOW) << 4);
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!HIGH) << 4);
+}
+
+void ILI9341_PORTB::data(uint8_t cmd) {
+    _rs_info->gpio_device->regs->BSRR = (1U << _rs_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!LOW) << 4);
+
+    gpiob.regs->ODR &= 0xFF00;
+    gpiob.regs->ODR |= cmd;
+
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!LOW) << 4);
+    _wr_info->gpio_device->regs->BSRR = (1U << _wr_info->gpio_bit) << ((!HIGH) << 4);
+    _cs_info->gpio_device->regs->BSRR = (1U << _cs_info->gpio_bit) << ((!HIGH) << 4);
+}
+
+void ILI9341_PORTB::initializeDevice() {
+    if (_cs_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_rs_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_wr_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_rd_pin >= BOARD_NR_GPIO_PINS) return;
+    if (_reset_pin >= BOARD_NR_GPIO_PINS) return;
+
+    _wr_info = &PIN_MAP[_wr_pin];
+    _rd_info = &PIN_MAP[_rd_pin];
+    _rs_info = &PIN_MAP[_rs_pin];
+    _cs_info = &PIN_MAP[_cs_pin];
+
+    pinMode(_cs_pin, OUTPUT);
+    pinMode(_rs_pin, OUTPUT);
+    pinMode(_wr_pin, OUTPUT);
+    pinMode(_rd_pin, OUTPUT);
+    pinMode(_reset_pin, OUTPUT);
+
+    pinMode(16, OUTPUT);
+    pinMode(17, OUTPUT);
+    pinMode(18, OUTPUT);
+    pinMode(19, OUTPUT);
+    pinMode(20, OUTPUT);
+    pinMode(21, OUTPUT);
+    pinMode(22, OUTPUT);
+    pinMode(23, OUTPUT);
+
+//    gpiob.regs->CRL = 0x33333333;
+
+    _width  = ILI9341::Width;
+    _height = ILI9341::Height;
+
+    digitalWrite(_cs_pin, HIGH);
+    digitalWrite(_rs_pin, HIGH);
+    digitalWrite(_wr_pin, HIGH);
+    digitalWrite(_rd_pin, HIGH);
+
+    digitalWrite(_reset_pin, HIGH);
+    delay(100);
+    digitalWrite(_reset_pin, LOW);
+    delay(100);
+    digitalWrite(_reset_pin, HIGH);
+    delay(100);
+    initChip();
+}
+
+
+#endif

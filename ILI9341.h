@@ -2,7 +2,6 @@
 #define _ILI9341_H
 
 #include <DisplayCore.h>
-#include <DSPI.h>
 
 class ILI9341 : public DisplayCore {
     protected:
@@ -38,6 +37,7 @@ class ILI9341 : public DisplayCore {
         static const uint8_t ILI9341_MADCTL_BGR       = 0x08;
         static const uint8_t ILI9341_MADCTL_MH        = 0x04;
 
+        #if defined(__PIC32__)
         p32_ioport *_d0_port;
         p32_ioport *_d1_port;
         p32_ioport *_d2_port;
@@ -65,6 +65,24 @@ class ILI9341 : public DisplayCore {
         uint32_t _wr_mask;
         uint32_t _rd_mask;
         uint32_t _rs_mask;
+
+        #elif defined(__STM32F1__)
+
+        const struct stm32_pin_info *_d0_info;
+        const struct stm32_pin_info *_d1_info;
+        const struct stm32_pin_info *_d2_info;
+        const struct stm32_pin_info *_d3_info;
+        const struct stm32_pin_info *_d4_info;
+        const struct stm32_pin_info *_d5_info;
+        const struct stm32_pin_info *_d6_info;
+        const struct stm32_pin_info *_d7_info;
+
+        const struct stm32_pin_info *_cs_info;
+        const struct stm32_pin_info *_wr_info;
+        const struct stm32_pin_info *_rd_info;
+        const struct stm32_pin_info *_rs_info;
+
+        #endif
 
         uint8_t _rs_pin;
         uint8_t _wr_pin;
@@ -118,6 +136,32 @@ class ILI9341 : public DisplayCore {
 
 };
 
+#if defined(__STM32F1__)
+class ILI9341_PORTB : public ILI9341 {
+    private:
+        uint8_t _rs_pin;
+        uint8_t _wr_pin;
+        uint8_t _rd_pin;
+        uint8_t _cs_pin;
+        uint8_t _reset_pin;
+
+        const struct stm32_pin_info *_cs_info;
+        const struct stm32_pin_info *_wr_info;
+        const struct stm32_pin_info *_rd_info;
+        const struct stm32_pin_info *_rs_info;
+
+    public:
+        ILI9341_PORTB(uint8_t rs, uint8_t wr, uint8_t rd, uint8_t cs, uint8_t reset) :
+            _rs_pin(rs), _wr_pin(wr), _rd_pin(rd), _cs_pin(cs), _reset_pin(reset) {}
+
+        void command(uint8_t cmd);
+        void data(uint8_t dat);
+        void initializeDevice();
+};
+#endif
+
+#if defined(__PIC32__)
+#include <DSPI.h>
 class ILI9341_DSPI : public ILI9341 {
     private:
         DSPI *_spi;
@@ -137,5 +181,6 @@ class ILI9341_DSPI : public ILI9341 {
         void data(uint8_t d);
 
 };
+#endif
 
 #endif
