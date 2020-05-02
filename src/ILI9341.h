@@ -1,9 +1,9 @@
 #ifndef _ILI9341_H
 #define _ILI9341_H
 
-#include <DisplayCore.h>
+#include <Cariad.h>
 
-class ILI9341 : public DisplayCore {
+class ILI9341 : public Cariad {
     protected:
 
         static const uint8_t ILI9341_SOFTRESET        = 0x01;

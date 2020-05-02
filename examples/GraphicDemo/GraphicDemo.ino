@@ -65,14 +65,14 @@ void loop() {
 	tft.drawRectangle(0,      dy - 1, tw,    dh + 2, Color::Yellow); // center frame
 	tft.setTextColor(Color::Black, Color::White);
 	tft.setCursor(1,   1);
-	tft.print("DisplayCore Demo 1.0 - Welcome");
+	tft.print("Cariad Demo 1.0 - Welcome");
 	xd = (tft.getWidth() - tft.stringWidth("(c) 2017 Dr. Mathias Wilhelm")) / 2;
 	tft.setCursor(xd, th - fh - fs);
 	tft.print("(c) 2017 Dr. Mathias Wilhelm");
 	tft.setTextColor(Color::White, Color::Black);
-	xd = (tft.getWidth() - tft.stringWidth("DisplayCore Demo")) / 2;
+	xd = (tft.getWidth() - tft.stringWidth("Cariad Demo")) / 2;
 	tft.setCursor(xd + 1, th / 2);
-	tft.print("DisplayCore Demo");
+	tft.print("Cariad Demo");
 	tft.drawLine(xd - 20, th / 2     , xd - 2, th / 2     , Color::White);
 	tft.drawLine(xd - 30, th / 2 + fh / 2, xd - 2, th / 2 + fh / 2, Color::White);
 	tft.drawLine(xd - 40, th / 2 + fh  , xd - 2, th / 2 + fh  , Color::White);
@@ -108,7 +108,7 @@ void loop() {
 	tft.drawRectangle(0,      dy - 1, tw,    dh + 2, Color::Yellow); // center frame
 	tft.setTextColor(Color::Black, Color::White);
 	tft.setCursor(1,   1);
-	tft.print("DisplayCore Demo 1.0 - draw curves");
+	tft.print("Cariad Demo 1.0 - draw curves");
 	xd = (tft.getWidth() - tft.stringWidth("(c) 2017 Dr. Mathias Wilhelm")) / 2;
 	tft.setCursor(xd, th - fh - fs);
 	tft.print("(c) 2017 Dr. Mathias Wilhelm");
@@ -152,7 +152,7 @@ void loop() {
 	tft.fillRectangle(0,         0, tw, fh + 2 * fs, Color::White); // top label frame
 	tft.setTextColor(Color::Black, Color::White);
 	tft.setCursor(1,   1);
-	tft.print("DisplayCore Demo 1.0 - draw data");
+	tft.print("Cariad Demo 1.0 - draw data");
 	tft.fillRectangle(1, dy + 1, tw - 2, dh - 2, Color::Black);
 	tft.setTextColor(Color::White, Color::Black);
 
@@ -183,7 +183,7 @@ void loop() {
 	tft.fillRectangle(0,         0, tw, fh + 2 * fs, Color::White); // top label frame
 	tft.setTextColor(Color::Black, Color::White);
 	tft.setCursor(1,   1);
-	tft.print("DisplayCore Demo 1.0 - 3D cube");
+	tft.print("Cariad Demo 1.0 - 3D cube");
 	tft.fillRectangle(1, dy + 1, tw - 2, dh - 2, Color::Black);
 	tft.setTextColor(Color::White, Color::Black);
 	deltaX = random(5) - 3;
